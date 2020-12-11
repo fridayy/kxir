@@ -1,6 +1,8 @@
-# Kxir
+# kxir
 
-**TODO: Add description**
+*kxir* is a simple, unfinished cli with the goal to improve some common `kubectl` workflows.
+
+
 
 ## Installation
 
