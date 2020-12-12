@@ -9,7 +9,7 @@ defmodule Kxir.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       escript: [
-        main_module: Kxir,
+        main_module: Kxir.CLI,
         name: "kx"
       ]
     ]
