@@ -25,7 +25,8 @@ defmodule Kxir.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:k8s, "~> 0.5"}
+      {:k8s, "~> 0.5"},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
     ]
   end
 end
