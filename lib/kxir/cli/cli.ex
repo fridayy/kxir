@@ -10,7 +10,11 @@ defmodule Kxir.CLI do
   end
 
   def main(args) do
-    parsed_args = OptionParser.parse(args, strict: [help: :boolean, jaro: :string])
+    parsed_args =
+      OptionParser.parse(args,
+        aliases: [p: :pipe],
+        strict: [help: :boolean, jaro: :string, pipe: :boolean]
+      )
 
     case parsed_args do
       {[], ["logs", pod_name, namespace], []} ->
@@ -30,6 +34,24 @@ defmodule Kxir.CLI do
 
       {[], ["logs"], []} ->
         IO.puts(Kxir.CLI.Help.help(Kxir.Logs))
+
+      {[pipe: true], [number], []} ->
+        # TODO: extract to fn and extract case block into fns for guards
+        IO.read(:all)
+        |> Kxir.Pod.parse()
+        |> Enum.at(String.to_integer(number))
+        |> Kxir.Logs.aggregate()
+
+      {[pipe: true], [number, namespace], []} ->
+        IO.read(:all)
+        |> Kxir.Pod.parse()
+        |> Enum.at(String.to_integer(number))
+        |> Kxir.Logs.aggregate(namespace: namespace)
+      {[pipe: true, jaro: name], [number, namespace], []} ->
+        IO.read(:all)
+        |> Kxir.Pod.parse()
+        |> Enum.at(String.to_integer(number))
+        |> Kxir.Logs.aggregate(namespace: namespace, jaro: name)
 
       _ ->
         IO.puts(Kxir.CLI.Help.help(Kxir.CLI))

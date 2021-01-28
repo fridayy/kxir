@@ -20,7 +20,10 @@ defmodule Kxir.Logs do
 
   def aggregate(pod_name, []) do
     do_aggregate(pod_name, "default")
-    |> IO.puts()
+  end
+
+  def aggregate(pod_name, namespace: namespace) do
+    do_aggregate(pod_name, namespace)
   end
 
   def aggregate(pod_name, jaro: filtered_name),
@@ -29,21 +32,24 @@ defmodule Kxir.Logs do
   def aggregate(pod_name, namespace: namespace, jaro: filtered_name) do
     # todo: remove duplicated code and extract filter and namespace to keyword opts
     Pod.logs(pod_name, namespace)
-    |> Enum.filter(fn tuple -> Jaro.filter(tuple, name: filtered_name) end)
-    |> Enum.map(fn t -> attach_name_to_line(t) <> "\n" end)
-    |> IO.puts()
+    |> Stream.filter(fn tuple -> Jaro.filter(tuple, name: filtered_name) end)
+    |> Stream.map(fn t -> attach_name_to_line(t) end)
   end
 
   defp do_aggregate(pod_name, namespace) do
     Pod.logs(pod_name, namespace)
-    |> Enum.map(fn t -> attach_name_to_line(t) <> "\n" end)
+    |> Stream.map(fn t -> attach_name_to_line(t) end)
+    #|> Enum.sort_by(fn x -> elem(x, 0) end, :asc)
+    |> Stream.each(&(IO.puts(elem(&1,1))))
+    |> Enum.to_list()
   end
 
-  defp attach_name_to_line({name, lines}) do
-    String.split(lines, "\n")
-    |> Enum.filter(&(String.length(&1) > 0))
-    |> Enum.map(fn line -> color_for(name) <> "[#{name}] " <> IO.ANSI.reset() <> line end)
+  defp attach_name_to_line({idx, name, lines}) do
+    logs = String.split(lines, "\n")
+    |> Stream.filter(&(String.length(&1) > 0))
+    |> Stream.map(fn line -> color_for(name) <> "[#{name}] " <> IO.ANSI.reset() <> line end)
     |> Enum.join("\n")
+    {idx, logs <> "\n"}
   end
 
   defp color_for(name) do
