@@ -21,11 +21,11 @@ defmodule Kxir.Pod do
   def  non_waiting_container_names(spec) do
     main_container_statuses = spec
     |> Map.get("status")
-    |> Map.get("containerStatuses")
+    |> Map.get("containerStatuses", [])
 
     init_container_statuses = spec
     |> Map.get("status")
-    |> Map.get("initContainerStatuses")
+    |> Map.get("initContainerStatuses", [])
 
     [main_container_statuses, init_container_statuses]
     |> List.flatten()
