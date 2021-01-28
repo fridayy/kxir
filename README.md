@@ -2,22 +2,9 @@
 
 *kxir* is a simple, unfinished cli with the goal to improve some common `kubectl` workflows.
 
+## Reading all logs of a pod at once
 
+Getting all container logs, especially init containers, is not that intuitive when using `kubectl`.
+For example: `$ kubectl logs test-job-qj9q8 -c test-job-git-init` and so on
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `kxir` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:kxir, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/kxir](https://hexdocs.pm/kxir).
-
+[![asciicast](https://asciinema.org/a/iJCr315PHmUX0vtWlxnmUhM2D.svg)](https://asciinema.org/a/iJCr315PHmUX0vtWlxnmUhM2D)
